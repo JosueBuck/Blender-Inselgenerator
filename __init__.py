@@ -113,6 +113,36 @@ class OT_Generate_Island(bpy.types.Operator):
         nodes_roof["Principled BSDF"].inputs[0].default_value = [0.8, 0.4, 0.1, 1.000000]
         return mat_roof
 
+    def createSommerGround(self) -> bpy.types.Material:
+        mat_ground: bpy.types.Material = bpy.data.materials.new("Ground Sommer Material")
+        mat_ground.use_nodes = True
+        nodes_ground: typing.List[bpy.types.Node] = mat_ground.node_tree.nodes
+        #noise Node
+        nodes_noise: bpy.types.Node = nodes_ground.new("ShaderNodeTexNoise")
+        nodes_noise.inputs[2].default_value = 71
+        #colorRamp Node
+        nodes_colorRamp: bpy.types.Node = nodes_ground.new("ShaderNodeValToRGB")
+        nodes_colorRamp.color_ramp.elements[0].color = (0.130,0.5,0.016,1)
+        nodes_colorRamp.color_ramp.elements[1].color = (0.014,0.05,0.001,1)
+        #Map Range
+        nodes_mapRange: bpy.types.Node = nodes_ground.new("ShaderNodeMapRange")
+        #nodes_mapRange.interpolation_type = "Stepped Linear"
+        #Mapping Node
+        nodes_maping: bpy.types.Node = nodes_ground.new("ShaderNodeMapping")
+        #Tex Coordinate
+        nodes_TexCoord: bpy.types.Node = nodes_ground.new("ShaderNodeTexCoord")
+        #Displacement
+        nodes_Displacement: bpy.types.Node = nodes_ground.new("ShaderNodeDisplacement")
+
+        mat_ground.node_tree.links.new(nodes_TexCoord.outputs[0], nodes_mapRange.inputs[0])
+        mat_ground.node_tree.links.new(nodes_mapRange.outputs[0], nodes_noise.inputs[0])
+        mat_ground.node_tree.links.new(nodes_noise.outputs[0], nodes_mapRange.inputs[0])
+        mat_ground.node_tree.links.new(nodes_mapRange.outputs[0], nodes_colorRamp.inputs[0])
+        mat_ground.node_tree.links.new(nodes_mapRange.outputs[0], nodes_Displacement.inputs[0])
+        mat_ground.node_tree.links.new(nodes_colorRamp.outputs[0], nodes_ground["Principled BSDF"].inputs[0])
+        mat_ground.node_tree.links.new(nodes_Displacement.outputs[0], nodes_ground["Material Output"].inputs[2])
+        return mat_ground
+    
     def normalTree(_self, _root, _number):
         # Mesh und Objekt erstellen
         tree_mesh = bpy.data.meshes.new("tree_mesh")
@@ -186,18 +216,14 @@ class OT_Generate_Island(bpy.types.Operator):
 
 
     def createGround(self):
-        #bpy.ops.mesh.primitive_plane_add(size=10, enter_editmode=True)
-        #bpy.ops.mesh.primitive_cube_add(enter_editmode=True, align='WORLD', location=(0, 0, 0), scale=(10, 10, 1))
-        bpy.ops.mesh.primitive_uv_sphere_add(enter_editmode=True, align='WORLD', scale=(3, 3, 3))
-        #bpy.ops.mesh.subdivide(number_cuts=50)
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=60, ring_count=40,enter_editmode=True, align='WORLD', scale=(3, 3, 3))
         bpy.ops.object.editmode_toggle()
         tex = bpy.data.textures.new(name = "cloud", type="CLOUDS")
         tex.noise_scale = 0.88
-        #tex.noise_type = "HARD_NOISE"
         tex.noise_depth = 2
         bpy.context.object.modifiers.new(name="Displace", type='DISPLACE')
         bpy.context.object.modifiers['Displace'].texture = tex
-        #bpy.ops.object.shade_smooth()
+        bpy.context.object.data.materials.append(bpy.data.materials.get("Ground Sommer Material"))
         bpy.ops.object.particle_system_add()
         bpy.data.particles["ParticleSettings"].type = 'HAIR'
         bpy.data.particles["ParticleSettings"].render_type = 'COLLECTION'
@@ -207,7 +233,7 @@ class OT_Generate_Island(bpy.types.Operator):
         bpy.data.particles["ParticleSettings"].rotation_mode = 'GLOB_Y'
         bpy.data.particles["ParticleSettings"].count = 30
         bpy.ops.transform.resize(value=(1, 1, 0.1), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
-
+        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
     #def createWater(): 
     #    bpy.ops.mesh.primitive_plane_add(size=15, enter_editmode=True)
@@ -275,6 +301,7 @@ class OT_Generate_Island(bpy.types.Operator):
         bpy.ops.outliner.orphans_purge() # löscht überbleibende Meshdaten etc.
         self.create_leaf_material()
         self.create_tribe_material()
+        self.createSommerGround()
         for i in range(10):
             for j in range(1):
                 self.normalTree([i,j,0], (i+1)*(j+1))
