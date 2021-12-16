@@ -9,14 +9,11 @@ bl_info = {
     "category" : "Generic"
 }
 
-from bmesh.types import BMVert
 from bpy.utils import register_class, unregister_class
 import bpy
 from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
-
-from mathutils import Vector
 
 class OT_Generate_Island(bpy.types.Operator):
 
@@ -32,9 +29,8 @@ class OT_Generate_Island(bpy.types.Operator):
     TREE_HEIGHT_MIN: bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)
     TREE_HEIGHT_MAX: bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)
 
-    ####fir tree
-    def firTree(_root, _number):
-        bpy.ops.mesh.primitive_cylinder_add(vertices=11, location=_root)
+    ISLAND_SIZE: bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)
+    ISLAND_HEIGHT: bpy.props.IntProperty(name="Island Height", min=1, max=5, default=3)
 
 
     @classmethod
@@ -45,6 +41,7 @@ class OT_Generate_Island(bpy.types.Operator):
         bpy.ops.object.select_all(action='SELECT') # selektiert alle Objekte
         bpy.ops.object.delete(use_global=False, confirm=False) # löscht selektierte objekte
         bpy.ops.outliner.orphans_purge() # löscht überbleibende Meshdaten etc.
+
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
         simpleTree.create_tribe_material()
@@ -66,8 +63,7 @@ class OT_Generate_Island(bpy.types.Operator):
             counter += 1
 
         ground = Ground()
-        ground.createSommerGround()
-        ground.createGround()
+        ground.createGround(self.ISLAND_SIZE, self.ISLAND_HEIGHT)
 
         water = Water() 
         water.createWater()
@@ -77,10 +73,8 @@ class OT_Generate_Island(bpy.types.Operator):
 def register():
     register_class(OT_Generate_Island)
  
- 
 def unregister():
     unregister_class(OT_Generate_Island)
- 
  
 if __name__ == '__main__':
     register()

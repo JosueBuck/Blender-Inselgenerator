@@ -97,11 +97,11 @@ class SimpleTree():
         bm = bmesh.new()
         edges = []
         endpointsOfTree = []
-        treeHight = int(random.uniform(_treeLenMin, _treeLenMax))
+        treeHeight = int(random.uniform(_treeLenMin, _treeLenMax))
         vert_1 = bm.verts.new((0, 0, 0))
         lastVert = vert_1
-        for i in range(treeHight):
-            if(i == treeHight - 1): 
+        for i in range(treeHeight):
+            if(i == treeHeight - 1): 
                 endOfTribCoord = _self.getCoordNextStepTribe(lastVert.co)
                 endpointsOfTree.append((endOfTribCoord[0], endOfTribCoord[1], endOfTribCoord[2]))
                 newVert = bm.verts.new((endOfTribCoord[0], endOfTribCoord[1], endOfTribCoord[2]))
@@ -132,7 +132,7 @@ class SimpleTree():
         tree_object.select_set(True)
         bpy.ops.object.modifier_apply(modifier="Skin")
         for i in endpointsOfTree:
-            leaf_object = bpy.ops.mesh.primitive_cube_add(location=(i)) 
+            bpy.ops.mesh.primitive_cube_add(location=(i)) 
             bpy.context.object.modifiers.new(name="Subdivision", type='SUBSURF')
             bpy.context.object.parent = tree_object
             bpy.context.object.data.materials.append(bpy.data.materials.get("Leaf Material"))
