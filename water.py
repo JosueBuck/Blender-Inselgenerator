@@ -39,5 +39,6 @@ class Water():
         mat_water.node_tree.links.new(node_tex.outputs[0], node_bump.inputs[2])
         mat_water.node_tree.links.new(node_bump.outputs[0], node_BSDF.inputs[20])
         bpy.context.object.data.materials.append(bpy.data.materials.get("Water Material"))
-        #fcurves = bpy.data.objects["Plane"].animation_data.action.fcurves[0].keyframe_points[0]
-        #fcurves.interpolation = "LINEAR"
+        for c_curve in mat_water.node_tree.animation_data.action.fcurves:
+            for c_keyframe in c_curve.keyframe_points:
+                c_keyframe.interpolation = "LINEAR"
