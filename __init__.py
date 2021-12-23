@@ -41,6 +41,11 @@ class OT_Generate_Island(bpy.types.Operator):
         bpy.ops.object.select_all(action='SELECT') # selektiert alle Objekte
         bpy.ops.object.delete(use_global=False, confirm=False) # löscht selektierte objekte
         bpy.ops.outliner.orphans_purge() # löscht überbleibende Meshdaten etc.
+        try:
+            if(bpy.data.collections['new_collection']):
+                bpy.data.collections.remove(bpy.data.collections['new_collection'])
+        except:
+            print("nicht vorhanden")
 
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()

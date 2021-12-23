@@ -87,6 +87,7 @@ class SimpleTree():
     # Mesh und Objekt erstellen
         tree_mesh = bpy.data.meshes.new("tree_mesh")
         tree_object = bpy.data.objects.new("tree" + str(_number), tree_mesh)
+        tree_object.name = "tree" + str(_number)
         tree_object.location = (_root[0], _root[1], _root[2])
         # Mesh in aktuelle Collection der Szene verlinken
         bpy.context.collection.objects.link(tree_object)
