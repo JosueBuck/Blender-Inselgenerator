@@ -1,4 +1,8 @@
+import random
 import bpy
+import types
+
+from .sky import Sky
 
 class Water():
     #def createWater(): 
@@ -39,6 +43,32 @@ class Water():
         mat_water.node_tree.links.new(node_tex.outputs[0], node_bump.inputs[2])
         mat_water.node_tree.links.new(node_bump.outputs[0], node_BSDF.inputs[20])
         bpy.context.object.data.materials.append(bpy.data.materials.get("Water Material"))
+
+        #Water Waves
         for c_curve in mat_water.node_tree.animation_data.action.fcurves:
             for c_keyframe in c_curve.keyframe_points:
                 c_keyframe.interpolation = "LINEAR"
+        
+        winter = True
+        if(winter):
+            _self.createIceShell(1)
+            bpy.context.view_layer.objects.active = bpy.data.objects.get("Plane")
+            bpy.ops.object.particle_system_add()
+            bpy.data.particles["ParticleSettings"].count = 20
+            bpy.data.particles["ParticleSettings"].type = 'HAIR'
+            bpy.data.particles["ParticleSettings"].render_type = 'OBJECT'
+            bpy.data.particles["ParticleSettings"].instance_object = bpy.data.objects["Sphere.001"]
+            bpy.data.particles["ParticleSettings"].particle_size = 0.07
+            bpy.data.particles["ParticleSettings"].rotation_mode = 'OB_Y'
+            bpy.data.particles["ParticleSettings"].size_random = 0.308219
+            sky = Sky()
+            sky.createSky()
+
+    def createIceShell(_self, number):
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=30, ring_count=30,enter_editmode=True, align='WORLD', scale=(1,1,0.5))
+        bpy.ops.object.editmode_toggle()
+        tex = bpy.data.textures.new(name = "cloud" + str(number), type="CLOUDS")
+        tex.noise_scale = random.uniform(0,2)
+        tex.noise_depth = 1
+        bpy.context.object.modifiers.new(name="DisplaceShells", type='DISPLACE')
+        bpy.context.object.modifiers['DisplaceShells'].texture = tex
