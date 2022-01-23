@@ -15,6 +15,8 @@ from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
 
+from .stone import OneStone
+
 class OT_Generate_Island(bpy.types.Operator):
 
     bl_idname = "mesh.island_generator"
@@ -47,6 +49,9 @@ class OT_Generate_Island(bpy.types.Operator):
         except:
             print("nicht vorhanden")
 
+        stone = OneStone()
+        stone.createStone()
+
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
         simpleTree.create_tribe_material()
@@ -66,6 +71,9 @@ class OT_Generate_Island(bpy.types.Operator):
             collection.objects.link(tree)
             bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].all_objects["tree" + str(counter)])
             counter += 1
+
+        collection.objects.link(bpy.data.objects["Stone"])
+        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["Stone"])
 
         ground = Ground()
         ground.createGround(self.ISLAND_SIZE, self.ISLAND_HEIGHT)
