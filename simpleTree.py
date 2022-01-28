@@ -83,7 +83,7 @@ class SimpleTree():
         nodes_roof["Principled BSDF"].inputs[0].default_value = [0.8, 0.4, 0.1, 1.000000]
         return mat_roof
 
-    def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax) -> bpy.types.NodeTree:
+    def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax) -> object:
     # Mesh und Objekt erstellen
         tree_mesh = bpy.data.meshes.new("tree_mesh")
         tree_object = bpy.data.objects.new("tree" + str(_number), tree_mesh)
@@ -95,7 +95,6 @@ class SimpleTree():
         bm = bmesh.new()
         bm.from_mesh(tree_mesh)
         bpy.data.meshes.new(name="treeMesh")
-        bm = bmesh.new()
         edges = []
         endpointsOfTree = []
         treeHeight = int(random.uniform(_treeLenMin, _treeLenMax))
@@ -140,3 +139,5 @@ class SimpleTree():
             bpy.context.view_layer.objects.active = tree_object
             bpy.data.objects["tree" + str(_number)].select_set(True)
             bpy.ops.object.join()
+        
+        return tree_object

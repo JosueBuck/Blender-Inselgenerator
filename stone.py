@@ -8,7 +8,7 @@ class OneStone():
     DECIMATE_FACTOR = random.uniform(0.35, 0.55)
     MATERIAL_NAME = "stone_material"
 
-    def createStone(_self):
+    def createStone(_self)-> object:
 
         bpy.ops.mesh.primitive_ico_sphere_add(
             radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 8), scale=(1, 1, 1))
@@ -63,3 +63,5 @@ class OneStone():
             stone.data.materials[0] = mat
         else:
             stone.data.materials.append(mat)
+        
+        return stone

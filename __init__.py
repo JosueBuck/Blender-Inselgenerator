@@ -50,30 +50,22 @@ class OT_Generate_Island(bpy.types.Operator):
             print("nicht vorhanden")
 
         stone = OneStone()
-        stone.createStone()
+        stoneObject = stone.createStone()
 
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
         simpleTree.create_tribe_material()
-        for i in range(10):
-            for j in range(1):
-                simpleTree.normalTree([i,j,0], (i+1)*(j+1), self.TREE_HEIGHT_MIN, self.TREE_HEIGHT_MAX, self.BRANCH_LENGTH_MIN, self.BRANCH_LENGTH_MAX)
-
-        collection = bpy.context.blend_data.collections.new(name='new_collection')
+        
+        newCollection = bpy.context.blend_data.collections.new(name='new_collection')
 
         for i in range(10):
             for j in range(1):
-                num = (i+1)*(j+1)
-                bpy.data.objects["tree" + str(num)].select_set(True)
-
-        counter = 1
-        for tree in bpy.context.selected_objects:
-            collection.objects.link(tree)
-            bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].all_objects["tree" + str(counter)])
-            counter += 1
-
-        collection.objects.link(bpy.data.objects["Stone"])
-        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["Stone"])
+                tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), self.TREE_HEIGHT_MIN, self.TREE_HEIGHT_MAX, self.BRANCH_LENGTH_MIN, self.BRANCH_LENGTH_MAX)
+                newCollection.objects.link(tree)
+                bpy.data.collections["Collection"].objects.unlink(tree)
+                
+        newCollection.objects.link(stoneObject)
+        bpy.data.collections["Collection"].objects.unlink(stoneObject)
 
         ground = Ground()
         ground.createGround(self.ISLAND_SIZE, self.ISLAND_HEIGHT)
