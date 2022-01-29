@@ -81,7 +81,7 @@ class Ground():
         ground_geoNodes.links.new(joinGeo.outputs[0],groupOut.inputs[0])
         return ground_geoNodes
 
-    def createGround(_self, _islandSize, _islandHeight):
+    def createGround(_self, _islandSize, _islandHeight, _season):
         _self.createSommerGround()
         bpy.ops.mesh.primitive_uv_sphere_add(segments=60, ring_count=60,enter_editmode=True, align='WORLD', scale=(_islandSize, _islandSize, _islandHeight))
         bpy.ops.object.editmode_toggle()
