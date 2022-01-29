@@ -40,7 +40,7 @@ class SimpleTree():
         return newPos
 
     def createBranch(_self, _branchVert, _endpointsOfTree, _direction, _bm, _edges, _lenMin, _lenMax):
-        print("ast")
+        #print("ast")
         branchLength = int(random.uniform(_lenMin, _lenMax))
         lastVertBranch = _branchVert
         for i in range(branchLength):
@@ -56,8 +56,8 @@ class SimpleTree():
                 _endpointsOfTree.append((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
                 newVert = _bm.verts.new((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
                 _edges.append([lastVertBranch, newVert])
-                print(lastVertBranch.co)
-                print("ast Ende")
+                #print(lastVertBranch.co)
+                #print("ast Ende")
             else:
                 if(_direction == "west"):
                     newVert = _bm.verts.new(_self.getCoordNextStepBranchWest(lastVertBranch.co))

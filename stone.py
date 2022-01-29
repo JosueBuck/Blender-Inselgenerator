@@ -28,7 +28,7 @@ class OneStone():
         bm = bmesh.from_edit_mesh(stone_mesh)
 
         bpy.context.scene.tool_settings.use_proportional_edit = True
-        print(bpy.data.scenes["Scene"])
+        #print(bpy.data.scenes["Scene"])
 
 
         vl = []
@@ -40,7 +40,7 @@ class OneStone():
                 selected_vert = random.randint(0, 2)
                 selected_vert2 = random.randint(0, 2)
                 vert_value = random.uniform(0.7, 1)
-                print(selected_vert)
+                #print(selected_vert)
                 if selected_vert == selected_vert2:
                     vert.co[selected_vert] = vert.co[selected_vert] * vert_value
                 vl.append(vert.co)
