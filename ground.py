@@ -29,7 +29,7 @@ class Ground():
         mat_ground.node_tree.links.new(nodes_colorRamp.outputs[0], nodes_ground["Principled BSDF"].inputs[0])
         return mat_ground
 
-    def createGroundGeoNodes(_self) -> bpy.types.NodeTree:
+    def createGroundGeoNodes(_self, amountObjects) -> bpy.types.NodeTree:
         ground_geoNodes: bpy.types.NodeTree = bpy.data.node_groups.new("Ground Geo Nodes", "GeometryNodeTree")
         groupInput: bpy.types.Node = ground_geoNodes.nodes.new("NodeGroupInput")
 
@@ -54,7 +54,7 @@ class Ground():
 
         pointDist: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodePointDistribute")
         pointDist.inputs[3].default_value = "nz"
-        pointDist.inputs[2].default_value = 25
+        pointDist.inputs[2].default_value = amountObjects
 
         pointScale: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodePointScale")
         pointScale.input_type = 'FLOAT'
@@ -81,7 +81,7 @@ class Ground():
         ground_geoNodes.links.new(joinGeo.outputs[0],groupOut.inputs[0])
         return ground_geoNodes
 
-    def createGround(_self, _islandSize, _islandHeight, _season):
+    def createGround(_self, _islandSize, _islandHeight, _season, _amountObjects):
         _self.createSommerGround()
         bpy.ops.mesh.primitive_uv_sphere_add(segments=60, ring_count=60,enter_editmode=True, align='WORLD', scale=(_islandSize, _islandSize, _islandHeight))
         bpy.ops.object.editmode_toggle()
@@ -95,7 +95,7 @@ class Ground():
 
 
         bpy.context.object.modifiers.new("GeoNodesModifier", "NODES")
-        bpy.context.object.modifiers['GeoNodesModifier'].node_group = _self.createGroundGeoNodes()
+        bpy.context.object.modifiers['GeoNodesModifier'].node_group = _self.createGroundGeoNodes(_amountObjects)
 
         bpy.ops.transform.resize(value=(1, 1, random.uniform(0.3,0.5)), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)

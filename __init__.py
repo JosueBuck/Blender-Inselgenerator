@@ -38,6 +38,11 @@ class OT_Generate_Island(bpy.types.Operator):
     bl_label = "Generate_Island"
     bl_description = "Generate an island"
 
+    
+    amount_objects = 60 #should be between 0 - 60 (danach siehts affig aus)
+    amount_trees = 1
+    amount_stones = 5
+
     @classmethod
     def poll(cls, context):
         return True
@@ -52,8 +57,7 @@ class OT_Generate_Island(bpy.types.Operator):
         except:
             print("nicht vorhanden")
 
-        stone = OneStone()
-        stoneObject = stone.createStone()
+        
 
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
@@ -62,20 +66,23 @@ class OT_Generate_Island(bpy.types.Operator):
         newCollection = bpy.context.blend_data.collections.new(name='new_collection')
 
         scene = context.scene
-        for i in range(10):
+        for i in range(self.amount_trees):
             for j in range(1):
                 tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.Tree_Height_Min, scene.Tree_Height_Max, scene.Branch_Length_Min, scene.Branch_Length_Max)
                 newCollection.objects.link(tree)
                 bpy.data.collections["Collection"].objects.unlink(tree)
                 
-        newCollection.objects.link(stoneObject)
-        bpy.data.collections["Collection"].objects.unlink(stoneObject)
+        stone = OneStone()
+        for i in range(self.amount_stones):
+            stoneObject = stone.createStone()
+            newCollection.objects.link(stoneObject)
+            bpy.data.collections["Collection"].objects.unlink(stoneObject)
 
         ground = Ground()
-        ground.createGround(scene.Island_Size, scene.Island_Height, scene.Season)
+        ground.createGround(scene.Island_Size, scene.Island_Height, scene.Season, self.amount_objects)
 
         water = Water() 
-        water.createWater()
+        water.createWater(scene.Season)
         
         return {"FINISHED"}
 
