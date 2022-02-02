@@ -14,6 +14,7 @@ import bpy
 from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
+from .boat import Boat
 
 from .stone import OneStone
 
@@ -83,6 +84,9 @@ class OT_Generate_Island(bpy.types.Operator):
 
         water = Water() 
         water.createWater(scene.Season)
+
+        boat = Boat()
+        boat.createBoat(scene.Island_Size)
         
         return {"FINISHED"}
 
