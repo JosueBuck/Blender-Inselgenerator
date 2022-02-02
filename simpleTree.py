@@ -71,19 +71,80 @@ class SimpleTree():
                 lastVertBranch = newVert
 
     def create_leaf_material(self) -> bpy.types.Material:
-        mat_roof: bpy.types.Material = bpy.data.materials.new("Leaf Material")
+
+        leaveMaterialName = "leaveMaterial"
+        leaveColor = (0.270 ,0.296 ,0.120 ,1)
+
+
+        """ match season:
+            case "SPRING":
+                
+                leaveMaterialName = "simpleTreeLeaveSpring"
+                leaveColor = (0.270 ,0.296 ,0.120 ,1)
+                return
+
+            case "SUMMER":
+
+                leaveMaterialName = "simpleTreeLeaveSummer"
+                leaveColor = (0.195 ,0.347 ,0.018 ,1)
+                return
+
+            case "AUTUMN":
+
+                leaveMaterialName = "simpleTreeLeaveAutumn"
+                leaveColor = (0.366 ,0.114 ,0.026 ,1)
+                return
+            
+            case "WINTER":
+
+                leaveMaterialName = "simpleTreeLeaveWinter"
+                leaveColor = (1,1,1,1)
+                return """
+
+        mat_roof: bpy.types.Material = bpy.data.materials.new(leaveMaterialName)
         mat_roof.use_nodes = True
         nodes_roof: typing.List[bpy.types.Node] = mat_roof.node_tree.nodes
-        nodes_roof["Principled BSDF"].inputs[0].default_value = [0, 1, 0, 1.000000]
+        nodes_roof["Principled BSDF"].inputs[0].default_value = leaveColor
         return mat_roof
     def create_tribe_material(self) -> bpy.types.Material:
-        mat_roof: bpy.types.Material = bpy.data.materials.new("Tribe Material")
+
+        tribeMaterialName = "simpleTreeTribe"
+        tribeColor = (0.114 ,0.041 ,0.010 ,1)
+
+
+        mat_roof: bpy.types.Material = bpy.data.materials.new(tribeMaterialName)
         mat_roof.use_nodes = True
         nodes_roof: typing.List[bpy.types.Node] = mat_roof.node_tree.nodes
-        nodes_roof["Principled BSDF"].inputs[0].default_value = [0.8, 0.4, 0.1, 1.000000]
+        nodes_roof["Principled BSDF"].inputs[0].default_value = tribeColor
         return mat_roof
 
     def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax) -> bpy.types.NodeTree:
+
+        tribeMaterialName = "simpleTreeTribe"
+        leaveMaterialName = "leaveMaterial"
+
+
+        """ match season:
+            case "SPRING":
+                
+                leaveMaterialName = "simpleTreeLeaveSpring"
+                return
+
+            case "SUMMER":
+
+                leaveMaterialName = "simpleTreeLeaveSummer"
+                return
+
+            case "AUTUMN":
+
+                leaveMaterialName = "simpleTreeLeaveAutumn"
+                return
+            
+            case "WINTER":
+
+                leaveMaterialName = "simpleTreeLeaveWinter"
+                return """
+
     # Mesh und Objekt erstellen
         tree_mesh = bpy.data.meshes.new("tree_mesh")
         tree_object = bpy.data.objects.new("tree" + str(_number), tree_mesh)
@@ -128,7 +189,7 @@ class SimpleTree():
         tree_skin_modifier = tree_object.modifiers.new(name="Skin", type='SKIN')
         tree_skin_modifier.branch_smoothing = 1
         tree_object.modifiers.new(name="Subdivision", type='SUBSURF')
-        tree_object.data.materials.append(bpy.data.materials.get("Tribe Material"))
+        tree_object.data.materials.append(bpy.data.materials.get(tribeMaterialName))
         bpy.context.view_layer.objects.active = tree_object
         tree_object.select_set(True)
         bpy.ops.object.modifier_apply(modifier="Skin")
@@ -136,7 +197,7 @@ class SimpleTree():
             bpy.ops.mesh.primitive_cube_add(location=(i)) 
             bpy.context.object.modifiers.new(name="Subdivision", type='SUBSURF')
             bpy.context.object.parent = tree_object
-            bpy.context.object.data.materials.append(bpy.data.materials.get("Leaf Material"))
+            bpy.context.object.data.materials.append(bpy.data.materials.get(leaveMaterialName))
             bpy.context.view_layer.objects.active = tree_object
             bpy.data.objects["tree" + str(_number)].select_set(True)
             bpy.ops.object.join()
