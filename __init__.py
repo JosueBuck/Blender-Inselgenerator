@@ -16,6 +16,8 @@ from .water import Water
 from .simpleTree import SimpleTree
 
 from .stone import OneStone
+from .firTree import FirTree
+from .mushroom import OneMushroom
 
 class OT_Generate_Island(bpy.types.Operator):
 
@@ -52,6 +54,12 @@ class OT_Generate_Island(bpy.types.Operator):
         stone = OneStone()
         stone.createStone()
 
+        fir = FirTree()
+        fir.createFirTree()
+
+        mushroom = OneMushroom()
+        mushroom.createMushroom()
+
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
         simpleTree.create_tribe_material()
@@ -74,6 +82,13 @@ class OT_Generate_Island(bpy.types.Operator):
 
         collection.objects.link(bpy.data.objects["Stone"])
         bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["Stone"])
+
+        collection.objects.link(bpy.data.objects["fir"])
+        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["fir"])
+
+        collection.objects.link(bpy.data.objects["mushroom"])
+        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["mushroom"])
+
 
         ground = Ground()
         ground.createGround(self.ISLAND_SIZE, self.ISLAND_HEIGHT)
