@@ -14,28 +14,37 @@ import bpy
 from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
+from .boat import Boat
 
 from .stone import OneStone
 from .firTree import FirTree
 from .mushroom import OneMushroom
 
+class MainPanel(bpy.types.Panel):
+    bl_label = "Generate Island"
+    bl_idname = "VIEW3D_PT_Main_Panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        col = self.layout.column()
+        for (prop_name, _) in props:
+            row = col.row()
+            row.prop(context.scene, prop_name)
+            
+            # insert operator
+        row = self.layout.row()
+        row.operator("mesh.island_generator", text="Generate Island")
 class OT_Generate_Island(bpy.types.Operator):
 
     bl_idname = "mesh.island_generator"
     bl_label = "Generate_Island"
     bl_description = "Generate an island"
-    bl_options = {"REGISTER", "UNDO"}
 
-    ####normal Tree start
-    BRANCH_LENGTH_MIN: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)
-    BRANCH_LENGTH_MAX: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=4)
-
-    TREE_HEIGHT_MIN: bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)
-    TREE_HEIGHT_MAX: bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)
-
-    ISLAND_SIZE: bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)
-    ISLAND_HEIGHT: bpy.props.IntProperty(name="Island Height", min=1, max=5, default=3)
-
+    
+    amount_objects = 60 #should be between 0 - 60 (danach siehts affig aus)
+    amount_trees = 1
+    amount_stones = 5
 
     @classmethod
     def poll(cls, context):
@@ -51,8 +60,7 @@ class OT_Generate_Island(bpy.types.Operator):
         except:
             print("nicht vorhanden")
 
-        stone = OneStone()
-        stone.createStone()
+        
 
         fir = FirTree()
         fir.createFirTree()
@@ -63,25 +71,21 @@ class OT_Generate_Island(bpy.types.Operator):
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
         simpleTree.create_tribe_material()
-        for i in range(10):
+        
+        newCollection = bpy.context.blend_data.collections.new(name='new_collection')
+
+        scene = context.scene
+        for i in range(self.amount_trees):
             for j in range(1):
-                simpleTree.normalTree([i,j,0], (i+1)*(j+1), self.TREE_HEIGHT_MIN, self.TREE_HEIGHT_MAX, self.BRANCH_LENGTH_MIN, self.BRANCH_LENGTH_MAX)
-
-        collection = bpy.context.blend_data.collections.new(name='new_collection')
-
-        for i in range(10):
-            for j in range(1):
-                num = (i+1)*(j+1)
-                bpy.data.objects["tree" + str(num)].select_set(True)
-
-        counter = 1
-        for tree in bpy.context.selected_objects:
-            collection.objects.link(tree)
-            bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].all_objects["tree" + str(counter)])
-            counter += 1
-
-        collection.objects.link(bpy.data.objects["Stone"])
-        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["Stone"])
+                tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.Tree_Height_Min, scene.Tree_Height_Max, scene.Branch_Length_Min, scene.Branch_Length_Max)
+                newCollection.objects.link(tree)
+                bpy.data.collections["Collection"].objects.unlink(tree)
+                
+        stone = OneStone()
+        for i in range(self.amount_stones):
+            stoneObject = stone.createStone()
+            newCollection.objects.link(stoneObject)
+            bpy.data.collections["Collection"].objects.unlink(stoneObject)
 
         collection.objects.link(bpy.data.objects["fir"])
         bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["fir"])
@@ -91,18 +95,46 @@ class OT_Generate_Island(bpy.types.Operator):
 
 
         ground = Ground()
-        ground.createGround(self.ISLAND_SIZE, self.ISLAND_HEIGHT)
+        ground.createGround(scene.Island_Size, scene.Island_Height, scene.Season, self.amount_objects)
 
         water = Water() 
-        water.createWater()
+        water.createWater(scene.Season)
+
+        boat = Boat()
+        boat.createBoat(scene.Island_Size)
         
         return {"FINISHED"}
 
+classes = [MainPanel, OT_Generate_Island] 
+
+props = [
+    ("Branch_Length_Min", bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)),
+    ("Branch_Length_Max", bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=4)),
+    ("Tree_Height_Min", bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)),
+    ("Tree_Height_Max", bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)),
+    ("Island_Size", bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)),
+    ("Island_Height", bpy.props.IntProperty(name="Island Height", min=1, max=5, default=3)),
+    ("Season", bpy.props.EnumProperty(items=[
+        ("0", "Spring", ""),
+        ("1", "Summer", ""),
+        ("2", "Autumn", ""),
+        ("3", "Winter", "")
+    ]))
+]
+
 def register():
-    register_class(OT_Generate_Island)
+    for cls in classes:
+        bpy.utils.register_class(cls)
+    
+    for (prop_name, prop_value) in props:
+        setattr(bpy.types.Scene, prop_name, prop_value)
  
 def unregister():
-    unregister_class(OT_Generate_Island)
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+    for (prop_name, prop_value) in props:
+        delattr(bpy.types.Scene, prop_name)
  
 if __name__ == '__main__':
     register()
