@@ -4,19 +4,49 @@ import typing
 
 class Ground():
     def createSommerGround(_self) -> bpy.types.Material:
-        mat_ground: bpy.types.Material = bpy.data.materials.new("Ground Sommer Material")
+
+        groundMaterialName = "groundMaterial"
+        groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+
+
+        """ match season:
+            case "SPRING":
+                
+                groundMaterialName = "groundMaterialSpring"
+                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+                return
+
+            case "SUMMER":
+
+                groundMaterialName = "groundMaterialSummer"
+                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+                return
+
+            case "AUTUMN":
+
+                groundMaterialName = "groundMaterialAutumn"
+                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+                return
+            
+            case "WINTER":
+
+                groundMaterialName = "groundMaterialWinter"
+                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+                return """
+
+        mat_ground: bpy.types.Material = bpy.data.materials.new(groundMaterialName)
         mat_ground.use_nodes = True
         nodes_ground: typing.List[bpy.types.Node] = mat_ground.node_tree.nodes
         #colorRamp Node
         nodes_colorRamp: bpy.types.Node = nodes_ground.new("ShaderNodeValToRGB")
-        nodes_colorRamp.color_ramp.elements[0].color = (0.001,0.015,0.000468,1)
+        nodes_colorRamp.color_ramp.elements[0].color = groundColors[0]
         nodes_colorRamp.color_ramp.elements[0].position = 0.373
-        nodes_colorRamp.color_ramp.elements[1].color = (0.006,0.061,0.002,1)
+        nodes_colorRamp.color_ramp.elements[1].color = groundColors[1]
         nodes_colorRamp.color_ramp.elements[1].position = 0.991
         nodes_colorRamp.color_ramp.elements.new(0.75)
-        nodes_colorRamp.color_ramp.elements[1].color = (0.08,0.236,0.017,1)
+        nodes_colorRamp.color_ramp.elements[1].color = groundColors[2]
         nodes_colorRamp.color_ramp.elements.new(0.1)
-        nodes_colorRamp.color_ramp.elements[0].color = (0.01,0.008,0.004,1)
+        nodes_colorRamp.color_ramp.elements[0].color = groundColors[3]
         #Tex Coordinate
         nodes_TexCoord: bpy.types.Node = nodes_ground.new("ShaderNodeTexCoord")
         #Seperate XYZ
@@ -30,6 +60,7 @@ class Ground():
         return mat_ground
 
     def createGroundGeoNodes(_self) -> bpy.types.NodeTree:
+
         ground_geoNodes: bpy.types.NodeTree = bpy.data.node_groups.new("Ground Geo Nodes", "GeometryNodeTree")
         groupInput: bpy.types.Node = ground_geoNodes.nodes.new("NodeGroupInput")
 
@@ -82,6 +113,30 @@ class Ground():
         return ground_geoNodes
 
     def createGround(_self, _islandSize, _islandHeight):
+
+        groundMaterialName = "groundMaterial"
+
+        """ match season:
+            case "SPRING":
+                
+                groundMaterialName = "groundMaterialSpring"
+                return
+
+            case "SUMMER":
+
+                groundMaterialName = "groundMaterialSummer"
+                return
+
+            case "AUTUMN":
+
+                groundMaterialName = "groundMaterialAutumn"
+                return
+            
+            case "WINTER":
+
+                groundMaterialName = "groundMaterialWinter"
+                return """
+                
         _self.createSommerGround()
         bpy.ops.mesh.primitive_uv_sphere_add(segments=60, ring_count=60,enter_editmode=True, align='WORLD', scale=(_islandSize, _islandSize, _islandHeight))
         bpy.ops.object.editmode_toggle()
@@ -91,7 +146,7 @@ class Ground():
         tex.noise_type = "HARD_NOISE"
         bpy.context.object.modifiers.new(name="Displace", type='DISPLACE')
         bpy.context.object.modifiers['Displace'].texture = tex
-        bpy.context.object.data.materials.append(bpy.data.materials.get("Ground Sommer Material"))
+        bpy.context.object.data.materials.append(bpy.data.materials.get(groundMaterialName))
 
 
         bpy.context.object.modifiers.new("GeoNodesModifier", "NODES")
