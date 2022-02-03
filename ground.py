@@ -3,36 +3,20 @@ import random
 import typing
 
 class Ground():
-    def createSommerGround(_self) -> bpy.types.Material:
+    def createGroundMaterial(_self, _season) -> bpy.types.Material:
 
-        groundMaterialName = "groundMaterial"
-        groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
-
-
-        """ match season:
-            case "SPRING":
-                
-                groundMaterialName = "groundMaterialSpring"
-                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
-                return
-
-            case "SUMMER":
-
-                groundMaterialName = "groundMaterialSummer"
-                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
-                return
-
-            case "AUTUMN":
-
-                groundMaterialName = "groundMaterialAutumn"
-                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
-                return
-            
-            case "WINTER":
-
-                groundMaterialName = "groundMaterialWinter"
-                groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
-                return """
+        if(_season == "0"):
+            groundMaterialName = "groundMaterialSpring"
+            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+        elif(_season == "1"):
+            groundMaterialName = "groundMaterialSummer"
+            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+        elif(_season == "2"):
+            groundMaterialName = "groundMaterialAutumn"
+            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+        elif(_season == "3"):
+            groundMaterialName = "groundMaterialWinter"
+            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
 
         mat_ground: bpy.types.Material = bpy.data.materials.new(groundMaterialName)
         mat_ground.use_nodes = True
@@ -47,6 +31,7 @@ class Ground():
         nodes_colorRamp.color_ramp.elements[1].color = groundColors[2]
         nodes_colorRamp.color_ramp.elements.new(0.1)
         nodes_colorRamp.color_ramp.elements[0].color = groundColors[3]
+        nodes_colorRamp.color_ramp.interpolation = "CONSTANT"
         #Tex Coordinate
         nodes_TexCoord: bpy.types.Node = nodes_ground.new("ShaderNodeTexCoord")
         #Seperate XYZ
@@ -118,28 +103,16 @@ class Ground():
 
         groundMaterialName = "groundMaterial"
 
-        """ match season:
-            case "SPRING":
-                
-                groundMaterialName = "groundMaterialSpring"
-                return
-
-            case "SUMMER":
-
-                groundMaterialName = "groundMaterialSummer"
-                return
-
-            case "AUTUMN":
-
-                groundMaterialName = "groundMaterialAutumn"
-                return
-            
-            case "WINTER":
-
+        if(_season == "0"):
+            groundMaterialName = "groundMaterialSpring"
+        elif(_season == "1"):
+            groundMaterialName = "groundMaterialSummer"
+        elif(_season == "2"):
+            groundMaterialName = "groundMaterialAutumn"
+        elif(_season == "3"):
                 groundMaterialName = "groundMaterialWinter"
-                return """
 
-        _self.createSommerGround()
+        _self.createGroundMaterial(_season)
         bpy.ops.mesh.primitive_uv_sphere_add(segments=60, ring_count=60,enter_editmode=True, align='WORLD', scale=(_islandSize, _islandSize, _islandHeight))
         bpy.ops.object.editmode_toggle()
         tex = bpy.data.textures.new(name = "cloud", type="CLOUDS")

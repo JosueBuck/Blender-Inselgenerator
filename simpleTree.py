@@ -40,7 +40,6 @@ class SimpleTree():
         return newPos
 
     def createBranch(_self, _branchVert, _endpointsOfTree, _direction, _bm, _edges, _lenMin, _lenMax):
-        #print("ast")
         branchLength = int(random.uniform(_lenMin, _lenMax))
         lastVertBranch = _branchVert
         for i in range(branchLength):
@@ -56,8 +55,6 @@ class SimpleTree():
                 _endpointsOfTree.append((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
                 newVert = _bm.verts.new((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
                 _edges.append([lastVertBranch, newVert])
-                #print(lastVertBranch.co)
-                #print("ast Ende")
             else:
                 if(_direction == "west"):
                     newVert = _bm.verts.new(_self.getCoordNextStepBranchWest(lastVertBranch.co))
@@ -70,42 +67,30 @@ class SimpleTree():
                 _edges.append([lastVertBranch, newVert])
                 lastVertBranch = newVert
 
-    def create_leaf_material(self) -> bpy.types.Material:
+    def create_leaf_material(self, _season) -> bpy.types.Material:
+        if(_season == "0"):
+            leaveMaterialName = "simpleTreeLeaveSpring"
+            leaveColor = (0.270 ,0.296 ,0.120 ,1)
 
-        leaveMaterialName = "leaveMaterial"
-        leaveColor = (0.270 ,0.296 ,0.120 ,1)
+        elif(_season == "1"):
+            leaveMaterialName = "simpleTreeLeaveSummer"
+            leaveColor = (0.195 ,0.347 ,0.018 ,1)
 
-
-        """ match season:
-            case "SPRING":
-                
-                leaveMaterialName = "simpleTreeLeaveSpring"
-                leaveColor = (0.270 ,0.296 ,0.120 ,1)
-                return
-
-            case "SUMMER":
-
-                leaveMaterialName = "simpleTreeLeaveSummer"
-                leaveColor = (0.195 ,0.347 ,0.018 ,1)
-                return
-
-            case "AUTUMN":
-
-                leaveMaterialName = "simpleTreeLeaveAutumn"
-                leaveColor = (0.366 ,0.114 ,0.026 ,1)
-                return
+        elif(_season == "2"):
+            leaveMaterialName = "simpleTreeLeaveAutumn"
+            leaveColor = (0.366 ,0.114 ,0.026 ,1)
             
-            case "WINTER":
-
-                leaveMaterialName = "simpleTreeLeaveWinter"
-                leaveColor = (1,1,1,1)
-                return """
+        elif(_season == "3"):
+            leaveMaterialName = "simpleTreeLeaveWinter"
+            leaveColor = (1,1,1,1)
+            
 
         mat_roof: bpy.types.Material = bpy.data.materials.new(leaveMaterialName)
         mat_roof.use_nodes = True
         nodes_roof: typing.List[bpy.types.Node] = mat_roof.node_tree.nodes
         nodes_roof["Principled BSDF"].inputs[0].default_value = leaveColor
         return mat_roof
+
     def create_tribe_material(self) -> bpy.types.Material:
 
         tribeMaterialName = "simpleTreeTribe"
@@ -119,32 +104,19 @@ class SimpleTree():
         return mat_roof
 
 
-    def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax) -> object:
+    def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax, _season) -> object:
 
         tribeMaterialName = "simpleTreeTribe"
-        leaveMaterialName = "leaveMaterial"
+        #leaveMaterialName = "leaveMaterial"
 
-
-        """ match season:
-            case "SPRING":
-                
+        if(_season == "0"):
                 leaveMaterialName = "simpleTreeLeaveSpring"
-                return
-
-            case "SUMMER":
-
+        elif(_season == "1"):
                 leaveMaterialName = "simpleTreeLeaveSummer"
-                return
-
-            case "AUTUMN":
-
+        elif(_season == "2"):
                 leaveMaterialName = "simpleTreeLeaveAutumn"
-                return
-            
-            case "WINTER":
-
+        elif(_season == "3"):
                 leaveMaterialName = "simpleTreeLeaveWinter"
-                return """
 
     # Mesh und Objekt erstellen
         tree_mesh = bpy.data.meshes.new("tree_mesh")

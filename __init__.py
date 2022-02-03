@@ -63,6 +63,7 @@ class OT_Generate_Island(bpy.types.Operator):
             print("nicht vorhanden")
 
         
+        scene = context.scene
 
         fir = FirTree()
         #fir.createFirTree()
@@ -71,15 +72,15 @@ class OT_Generate_Island(bpy.types.Operator):
         #mushroom.createMushroom()
 
         simpleTree = SimpleTree()
-        simpleTree.create_leaf_material()
+        simpleTree.create_leaf_material(scene.Season)
         simpleTree.create_tribe_material()
         
         newCollection = bpy.context.blend_data.collections.new(name='new_collection')
 
-        scene = context.scene
+        
         for i in range(self.amount_trees):
             for j in range(1):
-                tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.Tree_Height_Min, scene.Tree_Height_Max, scene.Branch_Length_Min, scene.Branch_Length_Max)
+                tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.Tree_Height_Min, scene.Tree_Height_Max, scene.Branch_Length_Min, scene.Branch_Length_Max, scene.Season)
                 newCollection.objects.link(tree)
                 bpy.data.collections["Collection"].objects.unlink(tree)
                 
@@ -91,13 +92,13 @@ class OT_Generate_Island(bpy.types.Operator):
 
 
         for i in range(self.amount_firs):
-            firObject = fir.createFirTree()
+            firObject = fir.createFirTree(scene.Season)
             newCollection.objects.link(firObject)
             bpy.data.collections["Collection"].objects.unlink(firObject)
 
 
         for i in range(self.amount_mushrooms):
-            mushroomObject = mushroom.createMushroom()
+            mushroomObject = mushroom.createMushroom(scene.Season)
             newCollection.objects.link(mushroomObject)
             bpy.data.collections["Collection"].objects.unlink(mushroomObject)
         """ newCollection.objects.link(bpy.data.objects["fir"])

@@ -5,38 +5,26 @@ import bmesh
 
 class OneMushroom():
 
-    def createMushroom(_self)-> object:
+    def createMushroom(_self, _season)-> object:
         #season = "SPRING"
 
         tribeMaterialName = "mushroomTribe"
-        mushroomMaterialName = "mushroomHat"
+        #mushroomMaterialName = "mushroomHat"
         tribeColor = (0.584, 0.423, 0.423, 1)
-        mushroomHatColor = (0.125, 0.063, 0.127, 1)
+        #mushroomHatColor = (0.125, 0.063, 0.127, 1)
 
-        """ match season:
-            case "SPRING":
-            
-                mushroomHatColor = (0.584, 0.423, 0.423, 1)
-                mushroomMaterialName = "mushroomHatSpring"
-                return
-
-            case "SUMMER":
-
-                mushroomHatColor = (0.855, 0, 0, 1)
-                mushroomMaterialName = "mushroomHatSummer"
-                return
-
-            case "AUTUMN":
-
-                mushroomHatColor = (0.127, 0.050, 0.026, 1)
-                mushroomMaterialName = "mushroomHatAutumn"
-                return
-            
-            case "WINTER":
-
-                mushroomHatColor = (0.031, 0.038, 0.072, 1)
-                mushroomMaterialName = "mushroomHatWinter"
-                return """
+        if(_season == "0"):
+            mushroomHatColor = (0.584, 0.423, 0.423, 1)
+            mushroomMaterialName = "mushroomHatSpring"
+        elif(_season == "1"):
+            mushroomHatColor = (0.855, 0, 0, 1)
+            mushroomMaterialName = "mushroomHatSummer"
+        elif(_season == "2"):
+            mushroomHatColor = (0.127, 0.050, 0.026, 1)
+            mushroomMaterialName = "mushroomHatAutumn"
+        elif(_season == "3"):
+            mushroomHatColor = (0.031, 0.038, 0.072, 1)
+            mushroomMaterialName = "mushroomHatWinter"
 
         if bpy.context.mode == "EDIT_MESH":
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -96,14 +84,6 @@ class OneMushroom():
         bpy.ops.mesh.extrude_faces_move(MESH_OT_extrude_faces_indiv={"mirror":False}, TRANSFORM_OT_shrink_fatten={"value":.5, "use_even_offset":True, "mirror":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "release_confirm":False})
         bpy.ops.transform.resize(value=(0.8, 0.8, 0.8), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=True, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.object.editmode_toggle()
-
-
-
-
-
-
-
-
 
         DECIMATE_FACTOR = random.uniform(0.95, 1)
         MATERIAL_NAME = "mushroom_material"

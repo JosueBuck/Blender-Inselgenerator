@@ -5,37 +5,25 @@ import bmesh
 
 class FirTree():
 
-    def createFirTree(_self) -> object:
+    def createFirTree(_self, _season) -> object:
 
         branchMaterialName = "firBranch"
-        leavesMaterialName = "firLeaves"
+        #leavesMaterialName = "firLeaves"
         branchColor = (0.114 ,0.041 ,0.010 ,1)
-        leavesColor = (0.112 ,0.127 ,0.024 ,1)
+        #leavesColor = (0.112 ,0.127 ,0.024 ,1)
 
-        """ match season:
-            case "SPRING":
-                
+        if(_season == "0"):
                 leavesMaterialName = "firLeavesSpring"
                 leavesColor = (0.112 ,0.127 ,0.024 ,1)
-                return
-
-            case "SUMMER":
-
+        elif(_season == "1"):
                 leavesMaterialName = "firLeavesSummer"
-                leavesColor = (0.184 ,0.212 ,0.038 ,1)
-                return
-
-            case "AUTUMN":
-
+                leavesColor = (0.195 ,0.347 ,0.018 ,1)
+        elif(_season == "2"):
                 leavesMaterialName = "firLeavesAutumn"
-                leavesColor = (0.107 ,0.127 ,0.011 ,1)
-                return
-            
-            case "WINTER":
-
+                leavesColor = (0.366 ,0.114 ,0.026 ,1)
+        elif(_season == "3"):
                 leavesMaterialName = "firLeavesWinter"
-                leavesColor = (0.047 ,0.054 ,0.006 ,1)
-                return """
+                leavesColor = (1,1,1,1)
 
         if bpy.context.mode == "EDIT_MESH":
             bpy.ops.object.mode_set(mode='OBJECT')
