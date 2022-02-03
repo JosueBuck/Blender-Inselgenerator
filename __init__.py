@@ -14,7 +14,7 @@ import bpy
 from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
-from .boat import Boat
+#from .boat import Boat
 
 from .stone import OneStone
 from .firTree import FirTree
@@ -45,6 +45,8 @@ class OT_Generate_Island(bpy.types.Operator):
     amount_objects = 60 #should be between 0 - 60 (danach siehts affig aus)
     amount_trees = 1
     amount_stones = 5
+    amount_firs = 2
+    amount_mushrooms = 5
 
     @classmethod
     def poll(cls, context):
@@ -63,10 +65,10 @@ class OT_Generate_Island(bpy.types.Operator):
         
 
         fir = FirTree()
-        fir.createFirTree()
+        #fir.createFirTree()
 
         mushroom = OneMushroom()
-        mushroom.createMushroom()
+        #mushroom.createMushroom()
 
         simpleTree = SimpleTree()
         simpleTree.create_leaf_material()
@@ -87,11 +89,22 @@ class OT_Generate_Island(bpy.types.Operator):
             newCollection.objects.link(stoneObject)
             bpy.data.collections["Collection"].objects.unlink(stoneObject)
 
-        collection.objects.link(bpy.data.objects["fir"])
+
+        for i in range(self.amount_firs):
+            firObject = fir.createFirTree()
+            newCollection.objects.link(firObject)
+            bpy.data.collections["Collection"].objects.unlink(firObject)
+
+
+        for i in range(self.amount_mushrooms):
+            mushroomObject = mushroom.createMushroom()
+            newCollection.objects.link(mushroomObject)
+            bpy.data.collections["Collection"].objects.unlink(mushroomObject)
+        """ newCollection.objects.link(bpy.data.objects["fir"])
         bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["fir"])
 
-        collection.objects.link(bpy.data.objects["mushroom"])
-        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["mushroom"])
+        newCollection.objects.link(bpy.data.objects["mushroom"])
+        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["mushroom"]) """
 
 
         ground = Ground()
@@ -100,8 +113,8 @@ class OT_Generate_Island(bpy.types.Operator):
         water = Water() 
         water.createWater(scene.Season)
 
-        boat = Boat()
-        boat.createBoat(scene.Island_Size)
+        #boat = Boat()
+        #boat.createBoat(scene.Island_Size)
         
         return {"FINISHED"}
 

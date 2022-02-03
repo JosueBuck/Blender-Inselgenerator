@@ -5,7 +5,7 @@ import bmesh
 
 class FirTree():
 
-    def createFirTree(_self):
+    def createFirTree(_self) -> object:
 
         branchMaterialName = "firBranch"
         leavesMaterialName = "firLeaves"
@@ -180,12 +180,10 @@ class FirTree():
 
         bpy.ops.object.editmode_toggle()
 
-        
-        objects = bpy.data.objects
-        a = objects['fir']
-        b = objects['tribe']
-        a.parent = b
-        a.matrix_parent_inverse = b.matrix_world.inverted()
+        fir.parent = tribe
+        fir.matrix_parent_inverse = tribe.matrix_world.inverted()
         bpy.ops.object.select_more()
         bpy.ops.object.join()
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+
+        return fir

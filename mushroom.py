@@ -5,44 +5,36 @@ import bmesh
 
 class OneMushroom():
 
-    def createMushroom(_self):
+    def createMushroom(_self)-> object:
         #season = "SPRING"
 
-        tribeMaterialName = ""
-        mushroomMaterialName = ""
-        tribeColor = (0,0,0,1)
-        mushroomHatColor = (0,0,0,1)
+        tribeMaterialName = "mushroomTribe"
+        mushroomMaterialName = "mushroomHat"
+        tribeColor = (0.584, 0.423, 0.423, 1)
+        mushroomHatColor = (0.125, 0.063, 0.127, 1)
 
         """ match season:
             case "SPRING":
-                
-                tribeColor = (1, 0.275, 0.584, 1)
-                mushroomHatColor = (0.826, 0.506, 0.127, 1)
-                tribeMaterialName = "mushroomTribeSpring"
+            
+                mushroomHatColor = (0.584, 0.423, 0.423, 1)
                 mushroomMaterialName = "mushroomHatSpring"
                 return
 
             case "SUMMER":
 
-                tribeColor = (0, 0, 0, 1)
-                mushroomHatColor = (0.00006, 1, 0.855, 1)
-                tribeMaterialName = "mushroomTribeSummer"
+                mushroomHatColor = (0.855, 0, 0, 1)
                 mushroomMaterialName = "mushroomHatSummer"
                 return
 
             case "AUTUMN":
 
-                tribeColor = (0, 0, 0, 1)
-                mushroomHatColor = (0.039, 0.794, 0.127, 1)
-                tribeMaterialName = "mushroomTribeAutumn"
+                mushroomHatColor = (0.127, 0.050, 0.026, 1)
                 mushroomMaterialName = "mushroomHatAutumn"
                 return
             
             case "WINTER":
 
-                tribeColor = (0, 0, 0, 1)
-                mushroomHatColor = (0.637, 0.575, 0.072, 1)
-                tribeMaterialName = "mushroomTribeWinter"
+                mushroomHatColor = (0.031, 0.038, 0.072, 1)
                 mushroomMaterialName = "mushroomHatWinter"
                 return """
 
@@ -132,7 +124,6 @@ class OneMushroom():
         bm = bmesh.from_edit_mesh(mushroom_mesh)
 
         bpy.context.scene.tool_settings.use_proportional_edit = True
-        print(bpy.data.scenes["Scene"])
 
 
 
@@ -145,7 +136,6 @@ class OneMushroom():
                 selected_vert = random.randint(0, 2)
                 selected_vert2 = random.randint(0, 2)
                 vert_value = random.uniform(0.7, 1)
-                print(selected_vert)
                 if selected_vert == selected_vert2:
                     vert.co[selected_vert] =  vert.co[selected_vert] * vert_value
                 vl.append(vert.co)
@@ -169,13 +159,11 @@ class OneMushroom():
             mushroom.data.materials.append(mat)
 
 
-        
-        objects = bpy.data.objects
-        a = objects['mushroom']
-        b = objects['tribe']
-        a.parent = b
-        a.matrix_parent_inverse = b.matrix_world.inverted()
+        mushroom.parent = tribe
+        mushroom.matrix_parent_inverse = tribe.matrix_world.inverted()
         bpy.ops.object.select_more()
         bpy.ops.object.join()
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+
+        return mushroom
 
