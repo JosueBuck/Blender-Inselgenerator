@@ -78,7 +78,7 @@ class SimpleTree():
 
         elif(_season == "2"):
             leaveMaterialName = "simpleTreeLeaveAutumn"
-            leaveColor = (0.366 ,0.114 ,0.026 ,1)
+            leaveColor = (0.806 ,0.414 ,0.056 ,1)
             
         elif(_season == "3"):
             leaveMaterialName = "simpleTreeLeaveWinter"
