@@ -7,16 +7,16 @@ class Ground():
 
         if(_season == "0"):
             groundMaterialName = "groundMaterialSpring"
-            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+            groundColors = [(0.801,0.715,0.619,1), (0.801,0.715,0.619,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
         elif(_season == "1"):
             groundMaterialName = "groundMaterialSummer"
             groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
         elif(_season == "2"):
             groundMaterialName = "groundMaterialAutumn"
-            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+            groundColors = [(0.267,0.210,0.086,1), (0.482,0.600,0.056,1), (0.205,0.467,0.075,1), (0.01,0.008,0.004,1)]
         elif(_season == "3"):
             groundMaterialName = "groundMaterialWinter"
-            groundColors = [(0.001,0.015,0.000468,1), (0.006,0.061,0.002,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
+            groundColors = [(0.001,0.015,0.000468,1), (0.606,0.661,0.652,1), (0.801,0.715,0.619,1), (0.400,0.400,0.450,1)]
 
         mat_ground: bpy.types.Material = bpy.data.materials.new(groundMaterialName)
         mat_ground.use_nodes = True
