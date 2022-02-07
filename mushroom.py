@@ -14,7 +14,7 @@ class OneMushroom():
         #mushroomHatColor = (0.125, 0.063, 0.127, 1)
 
         if(_season == "0"):
-            mushroomHatColor = (0.584, 0.423, 0.423, 1)
+            mushroomHatColor = (0.917, 0.493, 0.600, 1)
             mushroomMaterialName = "mushroomHatSpring"
         elif(_season == "1"):
             mushroomHatColor = (0.855, 0, 0, 1)
