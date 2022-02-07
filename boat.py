@@ -6,7 +6,7 @@ class Boat():
 
 
     def createBoat(_self, _islandSize):
-        filepath = "D:/thyra/Documents/Documents/HFU/5. Semester/Datenverarbeitung/Linking/boat.blend"
+        filepath = "//boat.blend"
         name = "Boot"
 
         with bpy.data.libraries.load(filepath, link=True) as (data_from, data_to):

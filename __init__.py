@@ -9,17 +9,35 @@ bl_info = {
     "category" : "Generic"
 }
 
+from unicodedata import name
 from bpy.utils import register_class, unregister_class
 import bpy
 from .ground import Ground
 from .water import Water
 from .simpleTree import SimpleTree
-#from .boat import Boat
+from .boat import Boat
 
 from .stone import OneStone
 from .firTree import FirTree
 from .mushroom import OneMushroom
 
+class MySettings(bpy.types.PropertyGroup):
+    Island_Size: bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)
+    Island_Height: bpy.props.IntProperty(name="Island Height", min=1, max=5, default=3)
+    Season: bpy.props.EnumProperty(items=[
+        ("0", "Spring", ""),
+        ("1", "Summer", ""),
+        ("2", "Autumn", ""),
+        ("3", "Winter", "")
+    ])
+    Simple_Tree: bpy.props.BoolProperty(name="Simple Tree", default=True)
+    Branch_Length_Min: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)
+    Branch_Length_Max: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=4)
+    Tree_Height_Min: bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)
+    Tree_Height_Max: bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)
+    Stone: bpy.props.BoolProperty(name="Stone", default=True)
+    Fir: bpy.props.BoolProperty(name="Fir", default=True)
+    Mushroom: bpy.props.BoolProperty(name="Mushroom", default=True)
 class MainPanel(bpy.types.Panel):
     bl_label = "Generate Island"
     bl_idname = "VIEW3D_PT_Main_Panel"
@@ -28,11 +46,38 @@ class MainPanel(bpy.types.Panel):
 
     def draw(self, context):
         col = self.layout.column()
-        for (prop_name, _) in props:
+        myprop = context.scene.my_props
+
+        row = col.row()
+        row.prop(myprop, "Island_Size")
+
+        row = col.row()
+        row.prop(myprop, "Island_Height")
+
+        row = col.row()
+        row.prop(myprop, "Season")
+        
+        row = col.row()
+        row.prop(myprop, "Simple_Tree")
+
+        if myprop.Simple_Tree == True:
             row = col.row()
-            row.prop(context.scene, prop_name)
-            
-            # insert operator
+            row.prop(myprop, "Branch_Length_Min")
+            row = col.row()
+            row.prop(myprop, "Branch_Length_Max")
+            row = col.row()
+            row.prop(myprop, "Tree_Height_Min")
+            row = col.row()
+            row.prop(myprop, "Tree_Height_Max")
+        
+        row = col.row()
+        row.prop(myprop, "Fir")
+
+        row = col.row()
+        row.prop(myprop, "Stone")
+
+        row = col.row()
+        row.prop(myprop, "Mushroom")
         row = self.layout.row()
         row.operator("mesh.island_generator", text="Generate Island")
 class OT_Generate_Island(bpy.types.Operator):
@@ -71,36 +116,38 @@ class OT_Generate_Island(bpy.types.Operator):
         mushroom = OneMushroom()
         #mushroom.createMushroom()
 
-        simpleTree = SimpleTree()
-        simpleTree.create_leaf_material(scene.Season)
-        simpleTree.create_tribe_material()
+        
         
         newCollection = bpy.context.blend_data.collections.new(name='new_collection')
 
-        
-        for i in range(self.amount_trees):
-            for j in range(1):
-                tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.Tree_Height_Min, scene.Tree_Height_Max, scene.Branch_Length_Min, scene.Branch_Length_Max, scene.Season)
-                newCollection.objects.link(tree)
-                bpy.data.collections["Collection"].objects.unlink(tree)
-                
-        stone = OneStone()
-        for i in range(self.amount_stones):
-            stoneObject = stone.createStone()
-            newCollection.objects.link(stoneObject)
-            bpy.data.collections["Collection"].objects.unlink(stoneObject)
+        if(scene.my_props.Simple_Tree == True):
+            simpleTree = SimpleTree()
+            simpleTree.create_leaf_material(scene.my_props.Season)
+            simpleTree.create_tribe_material()
+            for i in range(self.amount_trees):
+                for j in range(1):
+                    tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.my_props.Tree_Height_Min, scene.my_props.Tree_Height_Max, scene.my_props.Branch_Length_Min, scene.my_props.Branch_Length_Max, scene.my_props.Season)
+                    newCollection.objects.link(tree)
+                    bpy.data.collections["Collection"].objects.unlink(tree)
 
+        if(scene.my_props.Stone == True):   
+            stone = OneStone()
+            for i in range(self.amount_stones):
+                stoneObject = stone.createStone()
+                newCollection.objects.link(stoneObject)
+                bpy.data.collections["Collection"].objects.unlink(stoneObject)
 
-        for i in range(self.amount_firs):
-            firObject = fir.createFirTree(scene.Season)
-            newCollection.objects.link(firObject)
-            bpy.data.collections["Collection"].objects.unlink(firObject)
+        if(scene.my_props.Fir == True):
+            for i in range(self.amount_firs):
+                firObject = fir.createFirTree(scene.my_props.Season)
+                newCollection.objects.link(firObject)
+                bpy.data.collections["Collection"].objects.unlink(firObject)
 
-
-        for i in range(self.amount_mushrooms):
-            mushroomObject = mushroom.createMushroom(scene.Season)
-            newCollection.objects.link(mushroomObject)
-            bpy.data.collections["Collection"].objects.unlink(mushroomObject)
+        if(scene.my_props.Mushroom == True):
+            for i in range(self.amount_mushrooms):
+                mushroomObject = mushroom.createMushroom(scene.my_props.Season)
+                newCollection.objects.link(mushroomObject)
+                bpy.data.collections["Collection"].objects.unlink(mushroomObject)
         """ newCollection.objects.link(bpy.data.objects["fir"])
         bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["fir"])
 
@@ -109,46 +156,29 @@ class OT_Generate_Island(bpy.types.Operator):
 
 
         ground = Ground()
-        ground.createGround(scene.Island_Size, scene.Island_Height, scene.Season, self.amount_objects)
+        ground.createGround(scene.my_props.Island_Size, scene.my_props.Island_Height, scene.my_props.Season, self.amount_objects)
 
         water = Water() 
-        water.createWater(scene.Season)
+        water.createWater(scene.my_props.Season)
 
-        #boat = Boat()
-        #boat.createBoat(scene.Island_Size)
+        boat = Boat()
+        boat.createBoat(scene.my_props.Island_Size)
         
         return {"FINISHED"}
 
-classes = [MainPanel, OT_Generate_Island] 
-
-props = [
-    ("Branch_Length_Min", bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)),
-    ("Branch_Length_Max", bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=4)),
-    ("Tree_Height_Min", bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)),
-    ("Tree_Height_Max", bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)),
-    ("Island_Size", bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)),
-    ("Island_Height", bpy.props.IntProperty(name="Island Height", min=1, max=5, default=3)),
-    ("Season", bpy.props.EnumProperty(items=[
-        ("0", "Spring", ""),
-        ("1", "Summer", ""),
-        ("2", "Autumn", ""),
-        ("3", "Winter", "")
-    ]))
-]
+classes = [MainPanel, OT_Generate_Island, MySettings] 
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     
-    for (prop_name, prop_value) in props:
-        setattr(bpy.types.Scene, prop_name, prop_value)
+    bpy.types.Scene.my_props = bpy.props.PointerProperty(type=MySettings)
  
 def unregister():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        bpy.utils.unregister_class(cls)
 
-    for (prop_name, prop_value) in props:
-        delattr(bpy.types.Scene, prop_name)
+    del bpy.types.Scene.my_props
  
 if __name__ == '__main__':
     register()
