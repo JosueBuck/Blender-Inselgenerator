@@ -16,8 +16,8 @@ class Water():
         #    bpy.context.object.modifiers['Displace'].texture = tex
         #    bpy.ops.object.shade_smooth()
 
-    def createWater(_self, _season):
-        bpy.ops.mesh.primitive_plane_add(size=10)
+    def createWater(_self, _season, _islandSize):
+        bpy.ops.mesh.primitive_plane_add(size= 4.5 * _islandSize)
         mat_water: bpy.types.Material = bpy.data.materials.new("Water Material")
         mat_water.use_nodes = True
         nodes_water = mat_water.node_tree.nodes

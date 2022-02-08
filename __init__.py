@@ -173,7 +173,7 @@ class OT_Generate_Island(bpy.types.Operator):
         ground.createGround(scene.my_props.Island_Size, scene.my_props.Island_Height, scene.my_props.Season, scene.my_props.Amount_Objects)
 
         water = Water() 
-        water.createWater(scene.my_props.Season)
+        water.createWater(scene.my_props.Season, scene.my_props.Island_Size)
 
         boat = Boat()
         boat.createBoat(scene.my_props.Island_Size)
