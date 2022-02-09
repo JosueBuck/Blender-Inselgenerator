@@ -4,6 +4,8 @@ import bmesh
 import typing
 
 class SimpleTree():
+    branches = []
+
     def getCoordNextStepTribe(_self, _lastVert) -> float():
         xPos = random.uniform(-0.3,0.3)
         yPos = random.uniform(-0.3,0.3)
@@ -40,6 +42,7 @@ class SimpleTree():
         return newPos
 
     def createBranch(_self, _branchVert, _endpointsOfTree, _direction, _bm, _edges, _lenMin, _lenMax):
+        newBranchSpots = []
         branchLength = int(random.uniform(_lenMin, _lenMax))
         lastVertBranch = _branchVert
         for i in range(branchLength):
@@ -54,6 +57,7 @@ class SimpleTree():
                     endOfBranchCoord = _self.getCoordNextStepBranchNorth(lastVertBranch.co)
                 _endpointsOfTree.append((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
                 newVert = _bm.verts.new((endOfBranchCoord[0], endOfBranchCoord[1], endOfBranchCoord[2]))
+                newBranchSpots.append(newVert.co)
                 _edges.append([lastVertBranch, newVert])
             else:
                 if(_direction == "west"):
@@ -66,6 +70,8 @@ class SimpleTree():
                     newVert = _bm.verts.new(_self.getCoordNextStepBranchNorth(lastVertBranch.co))
                 _edges.append([lastVertBranch, newVert])
                 lastVertBranch = newVert
+                newBranchSpots.append(lastVertBranch.co)
+        _self.branches.append(newBranchSpots)
 
     def create_leaf_material(self, _season) -> bpy.types.Material:
         if(_season == "0"):
@@ -132,7 +138,9 @@ class SimpleTree():
         edges = []
         endpointsOfTree = []
         treeHeight = int(random.uniform(_treeLenMin, _treeLenMax))
+        trunk = bm.verts.new((0, 0, -0.2))
         vert_1 = bm.verts.new((0, 0, 0))
+        edges.append([trunk, vert_1]) 
         lastVert = vert_1
         for i in range(treeHeight):
             if(i == treeHeight - 1): 
@@ -157,17 +165,50 @@ class SimpleTree():
             bm.edges.new(i)
         bm.to_mesh(tree_mesh)
         bm.free()
+
         #Attach Modifiers
         tree_skin_modifier = tree_object.modifiers.new(name="Skin", type='SKIN')
         tree_skin_modifier.branch_smoothing = 1
         tree_object.modifiers.new(name="Subdivision", type='SUBSURF')
         tree_object.data.materials.append(bpy.data.materials.get(tribeMaterialName))
         bpy.context.view_layer.objects.active = tree_object
+        
+
+        goalThiknes = 0.1
+        startThikness = 0.8
+        lastVertWasBranch = False
+        lastVertThikness=0.35,0.35
+        lastBranchVertThikness = 0.35,0.35
+
+        for i, vert in enumerate(tree_object.data.skin_vertices[0].data):
+            v = tree_object.data.vertices[i]
+            if(i == 0):
+                vert.radius = startThikness, startThikness
+            if(_self.isBranch(v) == False):
+                vert.radius = goalThiknes + ((startThikness - goalThiknes)/treeHeight) * (treeHeight/(i+1)) , goalThiknes + ((startThikness - goalThiknes)/treeHeight) * (treeHeight/(i+1))
+                lastVertThikness = vert.radius[0], vert.radius[1]
+                lastVertWasBranch = False
+            else:
+                if(lastVertWasBranch):
+                    vert.radius = lastBranchVertThikness[0] /2, lastBranchVertThikness[1] /2
+                    lastBranchVertThikness = vert.radius[0], vert.radius[1]
+                    lastVertWasBranch = True
+                else:
+                    vert.radius = lastVertThikness[0] /2, lastVertThikness[1] /2
+                    lastBranchVertThikness = vert.radius[0], vert.radius[1]
+                    lastVertWasBranch = True
+        
         tree_object.select_set(True)
         bpy.ops.object.modifier_apply(modifier="Skin")
+        
+        countEndpoints=0
         for i in endpointsOfTree:
             bpy.ops.mesh.primitive_cube_add(location=(i)) 
             bpy.context.object.modifiers.new(name="Subdivision", type='SUBSURF')
+            if(countEndpoints==len(endpointsOfTree)-1):
+                bpy.ops.transform.resize(value=(random.uniform(1.5, 2),random.uniform(1.5,2),random.uniform(1.5, 2)))
+            else:
+                bpy.ops.transform.resize(value=(random.uniform(0.5, 1.2),random.uniform(0.5, 1.2),random.uniform(0.5, 1.2)))
             bpy.context.object.parent = tree_object
             bpy.context.object.data.materials.append(bpy.data.materials.get(leaveMaterialName))
             bpy.context.view_layer.objects.active = tree_object
@@ -175,3 +216,10 @@ class SimpleTree():
             bpy.ops.object.join()
         
         return tree_object
+    
+    def isBranch(_self, _vert) ->bool:
+        for branch in _self.branches:
+            for i in branch:
+                if(_vert.co == i):
+                    return True
+        return False
