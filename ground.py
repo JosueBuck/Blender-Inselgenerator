@@ -76,8 +76,11 @@ class Ground():
         pointScale.input_type = 'FLOAT'
         pointScale.inputs[3].default_value = 0.14
         attRand: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodeAttributeRandomize")
+        attRand.data_type = 'FLOAT_VECTOR'
         attRand.inputs[1].default_value = "rotation"
-        attRand.inputs[5].default_value = 0
+        attRand.inputs[3].default_value[0] = 0
+        attRand.inputs[3].default_value[1] = 0
+        attRand.inputs[3].default_value[2] = 20
         pointInst: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodePointInstance")
         pointInst.instance_type = 'COLLECTION'
         pointInst.use_whole_collection = False
