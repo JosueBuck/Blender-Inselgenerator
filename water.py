@@ -36,7 +36,7 @@ class Water():
         node_mapping.inputs[1].default_value = (0, 0, 0)
         node_mapping.inputs[1].keyframe_insert("default_value", frame=0)
         node_mapping.inputs[1].default_value = (0, 0, 1)
-        node_mapping.inputs[1].keyframe_insert("default_value", frame=240)
+        node_mapping.inputs[1].keyframe_insert("default_value", frame=250)
         node_tex_coord = nodes_water.new("ShaderNodeTexCoord")
         mat_water.node_tree.links.new(node_tex_coord.outputs[0], node_mapping.inputs[0])
         mat_water.node_tree.links.new(node_mapping.outputs[0], node_tex.inputs[0])

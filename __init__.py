@@ -30,6 +30,7 @@ class MySettings(bpy.types.PropertyGroup):
         ("2", "Autumn", ""),
         ("3", "Winter", "")
     ])
+    Boat_Speed: bpy.props.IntProperty(name="Boat Speed", min=1, max=3, default=1)
     Amount_Objects: bpy.props.IntProperty(name="Amount of Objects", min=1, max=60, default=60)
     Simple_Tree: bpy.props.BoolProperty(name="Simple Tree", default=True)
     Simple_Tree_Amount: bpy.props.IntProperty(name="Simple Tree Amount", min=1, max=10, default=1)
@@ -65,6 +66,9 @@ class MainPanel(bpy.types.Panel):
 
         row = col.row()
         row.prop(myprop, "Season")
+
+        row = col.row()
+        row.prop(myprop, "Boat_Speed")
 
         row = col.row()
         row.prop(myprop, "Amount_Objects")
@@ -176,7 +180,7 @@ class OT_Generate_Island(bpy.types.Operator):
         water.createWater(scene.my_props.Season, scene.my_props.Island_Size)
 
         boat = Boat()
-        boat.createBoat(scene.my_props.Island_Size)
+        boat.createBoat(scene.my_props.Island_Size, scene.my_props.Boat_Speed)
         
         return {"FINISHED"}
 

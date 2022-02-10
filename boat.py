@@ -6,7 +6,7 @@ import math
 class Boat():
 
 
-    def createBoat(_self, _islandSize):
+    def createBoat(_self, _islandSize, _boatSpeed):
         filepath = "//boat.blend"
         name = "Boot"
 
@@ -39,16 +39,20 @@ class Boat():
             empty.scale.z = 0.1
 
             #_self.randomLocation(empty, _islandSize)
-            _self.animateBoat(empty, _islandSize)
+            _self.animateBoat(empty, _islandSize, _boatSpeed)
             
 
-    def animateBoat(self, empty, _islandSize):
+    def animateBoat(self, empty, _islandSize, _boatSpeed):
         frames = 250
         i = 0
         angle = 0
         _islandSize += 1
         rotationAngle = 0
-        
+        frameAnimationSteps = 5
+        framesPerRound = frames / _boatSpeed
+        anglePerFrame = 350 / (framesPerRound / frameAnimationSteps)
+        anglePerFrameRadian = math.radians(anglePerFrame)
+
         
         while i <= frames:
             empty.location.x = float(decimal.Decimal(math.cos(angle)*_islandSize)) 
@@ -57,9 +61,9 @@ class Boat():
             empty.rotation_euler[2] = rotationAngle
             empty.keyframe_insert("rotation_euler",frame=i)
 
-            angle = angle -  0.244346
-            rotationAngle = rotationAngle - 0.244346
-            i += 10
+            angle = angle -  anglePerFrameRadian
+            rotationAngle = rotationAngle - anglePerFrameRadian
+            i += frameAnimationSteps 
         
     def randomLocation(self, empty, _islandSize): 
         locationX = float(decimal.Decimal(random.randrange(_islandSize*100, 470))/100)
