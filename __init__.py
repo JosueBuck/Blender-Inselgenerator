@@ -20,6 +20,7 @@ from .boat import Boat
 from .stone import OneStone
 from .firTree import FirTree
 from .mushroom import OneMushroom
+from .cabin import Cabin
 
 class MySettings(bpy.types.PropertyGroup):
     Island_Size: bpy.props.IntProperty(name="Island Size", min=1, max=5, default=3)
@@ -32,6 +33,7 @@ class MySettings(bpy.types.PropertyGroup):
     ])
     Boat_Speed: bpy.props.IntProperty(name="Boat Speed", min=1, max=3, default=1)
     Amount_Objects: bpy.props.IntProperty(name="Amount of Objects", min=1, max=60, default=60)
+    Cabin: bpy.props.BoolProperty(name="Cabin", default=False)
     Simple_Tree: bpy.props.BoolProperty(name="Simple Tree", default=True)
     Simple_Tree_Amount: bpy.props.IntProperty(name="Simple Tree Amount", min=1, max=10, default=1)
     Branch_Length_Min: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)
@@ -72,6 +74,9 @@ class MainPanel(bpy.types.Panel):
 
         row = col.row()
         row.prop(myprop, "Amount_Objects")
+
+        row = col.row()
+        row.prop(myprop, "Cabin")
         
         row = col.row()
         row.prop(myprop, "Simple_Tree")
@@ -135,6 +140,13 @@ class OT_Generate_Island(bpy.types.Operator):
         scene = context.scene
 
         newCollection = bpy.context.blend_data.collections.new(name='new_collection')
+
+        if(scene.my_props.Cabin == True):
+            cabin = Cabin()
+            cabin_Object = cabin.createCabin()
+            newCollection.objects.link(cabin_Object)
+            bpy.data.collections["Collection"].objects.unlink(cabin_Object)
+
 
         if(scene.my_props.Simple_Tree == True):
             simpleTree = SimpleTree()
