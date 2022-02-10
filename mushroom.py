@@ -6,12 +6,9 @@ import bmesh
 class OneMushroom():
 
     def createMushroom(_self, _season)-> object:
-        #season = "SPRING"
 
         tribeMaterialName = "mushroomTribe"
-        #mushroomMaterialName = "mushroomHat"
         tribeColor = (0.584, 0.423, 0.423, 1)
-        #mushroomHatColor = (0.125, 0.063, 0.127, 1)
 
         if(_season == "0"):
             mushroomHatColor = (0.917, 0.493, 0.600, 1)
@@ -30,15 +27,13 @@ class OneMushroom():
             bpy.ops.object.mode_set(mode='OBJECT')
             
 
-        bpy.ops.mesh.primitive_cylinder_add(vertices=12, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(.09, .09, .06))
+        bpy.ops.mesh.primitive_cylinder_add(vertices=12, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(.09, .09, .3))
         tribe = bpy.context.object
         tribe.name = 'tribe'
         bpy.ops.object.editmode_toggle()
         tribe_mesh = bpy.context.view_layer.objects.active.data
 
         bm = bmesh.from_edit_mesh(tribe_mesh)
-
-        vl = []
 
         for vert in bm.verts:
             for l in vert.link_edges:
@@ -78,21 +73,12 @@ class OneMushroom():
         else: 
             tribe.data.materials.append(mat)
 
-            
-
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.mesh.extrude_faces_move(MESH_OT_extrude_faces_indiv={"mirror":False}, TRANSFORM_OT_shrink_fatten={"value":.5, "use_even_offset":True, "mirror":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "release_confirm":False})
-        bpy.ops.transform.resize(value=(0.8, 0.8, 0.8), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=True, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
-        bpy.ops.object.editmode_toggle()
 
         DECIMATE_FACTOR = random.uniform(0.95, 1)
-        MATERIAL_NAME = "mushroom_material"
 
-
-        bpy.ops.mesh.primitive_ico_sphere_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, .5), scale=(0.5, 0.5, 0.2))
+        bpy.ops.mesh.primitive_ico_sphere_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, .3), scale=(0.4, 0.4, 0.1))
         mushroom = bpy.context.object
         mushroom.name = 'mushroom'
-        stone = bpy.context.object
         decimate_modifier: bpy.types.DecimateModifier = mushroom.modifiers.new("decimate", type="DECIMATE")
 
         decimate_modifier.ratio = DECIMATE_FACTOR
