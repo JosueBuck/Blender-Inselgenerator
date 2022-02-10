@@ -32,20 +32,20 @@ class MySettings(bpy.types.PropertyGroup):
     ])
     Amount_Objects: bpy.props.IntProperty(name="Amount of Objects", min=1, max=60, default=60)
     Simple_Tree: bpy.props.BoolProperty(name="Simple Tree", default=True)
-    Simple_Tree_Amount: bpy.props.IntProperty(name="Simple Tree Amount", min=1, max=2, default=1)
+    Simple_Tree_Amount: bpy.props.IntProperty(name="Simple Tree Amount", min=1, max=10, default=1)
     Branch_Length_Min: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=2)
     Branch_Length_Max: bpy.props.IntProperty(name="Max Branch Length", min=2, max=4, default=4)
     Tree_Height_Min: bpy.props.IntProperty(name="Tree Height Min", min=5, max=8, default=5)
     Tree_Height_Max: bpy.props.IntProperty(name="Tree Height Max", min=5, max=8, default=8)
 
     Fir: bpy.props.BoolProperty(name="Fir", default=True)
-    Fir_Amount: bpy.props.IntProperty(name="Fir Amount", min=1, max=3, default=2)
+    Fir_Amount: bpy.props.IntProperty(name="Fir Amount", min=1, max=10, default=2)
 
     Stone: bpy.props.BoolProperty(name="Stone", default=True)
-    Stone_Amount: bpy.props.IntProperty(name="Stone Amount", min=1, max= 7, default=5)
+    Stone_Amount: bpy.props.IntProperty(name="Stone Amount", min=1, max=10, default=5)
     
     Mushroom: bpy.props.BoolProperty(name="Mushroom", default=True)
-    Mushroom_Amount: bpy.props.IntProperty(name="Mushroom Amount", min=1, max=7, default=5)
+    Mushroom_Amount: bpy.props.IntProperty(name="Mushroom Amount", min=1, max=10, default=5)
 class MainPanel(bpy.types.Panel):
     bl_label = "Generate Island"
     bl_idname = "VIEW3D_PT_Main_Panel"
