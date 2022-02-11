@@ -69,8 +69,10 @@ class Ground():
         attMapRange.inputs[4].default_value = 90.6
 
         pointDist: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodePointDistribute")
+        pointDist.distribute_method = 'POISSON'
         pointDist.inputs[3].default_value = "nz"
         pointDist.inputs[2].default_value = amountObjects
+        pointDist.inputs[1].default_value = 0.1
 
         pointScale: bpy.types.Node = ground_geoNodes.nodes.new("GeometryNodePointScale")
         pointScale.input_type = 'FLOAT'
