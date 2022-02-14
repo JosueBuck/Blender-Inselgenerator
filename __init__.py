@@ -1,6 +1,6 @@
 bl_info = {
     "name" : "island_generator",
-    "author" : "SexyPeople",
+    "author" : "Lukas, Josue, Thyra, Jonathan",
     "description" : "",
     "blender" : (2, 80, 0),
     "version" : (0, 0, 1),
@@ -10,7 +10,6 @@ bl_info = {
 }
 
 from unicodedata import name
-from bpy.utils import register_class, unregister_class
 import bpy
 from .ground import Ground
 from .water import Water
@@ -136,17 +135,14 @@ class OT_Generate_Island(bpy.types.Operator):
         except:
             print("nicht vorhanden")
 
-        
-        scene = context.scene
-
         newCollection = bpy.context.blend_data.collections.new(name='new_collection')
 
+        scene = context.scene
         if(scene.my_props.Cabin == True):
             cabin = Cabin()
             cabin_Object = cabin.createCabin()
             newCollection.objects.link(cabin_Object)
             bpy.data.collections["Collection"].objects.unlink(cabin_Object)
-
 
         if(scene.my_props.Simple_Tree == True):
             simpleTree = SimpleTree()
@@ -154,7 +150,7 @@ class OT_Generate_Island(bpy.types.Operator):
             simpleTree.create_tribe_material()
             for i in range(scene.my_props.Simple_Tree_Amount):
                 for j in range(1):
-                    tree = simpleTree.normalTree([i,j,0], (i+1)*(j+1), scene.my_props.Tree_Height_Min, scene.my_props.Tree_Height_Max, scene.my_props.Branch_Length_Min, scene.my_props.Branch_Length_Max, scene.my_props.Season)
+                    tree = simpleTree.createSimpleTree([i,j,0], (i+1)*(j+1), scene.my_props.Tree_Height_Min, scene.my_props.Tree_Height_Max, scene.my_props.Branch_Length_Min, scene.my_props.Branch_Length_Max, scene.my_props.Season)
                     newCollection.objects.link(tree)
                     bpy.data.collections["Collection"].objects.unlink(tree)
 
@@ -178,12 +174,6 @@ class OT_Generate_Island(bpy.types.Operator):
                 mushroomObject = mushroom.createMushroom(scene.my_props.Season)
                 newCollection.objects.link(mushroomObject)
                 bpy.data.collections["Collection"].objects.unlink(mushroomObject)
-        """ newCollection.objects.link(bpy.data.objects["fir"])
-        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["fir"])
-
-        newCollection.objects.link(bpy.data.objects["mushroom"])
-        bpy.data.collections["Collection"].objects.unlink(bpy.data.collections["Collection"].objects["mushroom"]) """
-
 
         ground = Ground()
         ground.createGround(scene.my_props.Island_Size, scene.my_props.Island_Height, scene.my_props.Season, scene.my_props.Amount_Objects)
@@ -196,7 +186,7 @@ class OT_Generate_Island(bpy.types.Operator):
         
         return {"FINISHED"}
 
-classes = [MainPanel, OT_Generate_Island, MySettings] 
+classes = [MySettings, MainPanel, OT_Generate_Island] 
 
 def register():
     for cls in classes:

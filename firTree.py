@@ -1,12 +1,9 @@
 import bpy
-import random
 import bmesh
 
 
 class FirTree():
-
     def createFirTree(_self, _season) -> object:
-
         branchMaterialName = "firBranch"
         branchColor = (0.114 ,0.041 ,0.010 ,1)
 
@@ -57,7 +54,6 @@ class FirTree():
             mat.use_nodes = True
             mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = branchColor
 
-
         mat.use_nodes = True
 
         if branch.data.materials:
@@ -74,17 +70,11 @@ class FirTree():
 
         bm = bmesh.from_edit_mesh(leaves_mesh)
 
-        vl = []
-
         for vert in bm.verts:
             for l in vert.link_edges:
                 if vert.index % 2 == 1:
-                    print(vert.co)
                     vert.co[0] = vert.co[0] * 0.1
                     vert.co[1] = vert.co[1] * 0.1
-                
-                print(vert.index)
-
 
         mat_leaves = bpy.data.materials.get(leavesMaterialName)
 
@@ -92,7 +82,6 @@ class FirTree():
             mat_leaves = bpy.data.materials.new(name=leavesMaterialName)
             mat_leaves.use_nodes = True
             mat_leaves.node_tree.nodes["Principled BSDF"].inputs[0].default_value = leavesColor
-
 
         mat_leaves.use_nodes = True
 

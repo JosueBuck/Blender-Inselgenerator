@@ -4,7 +4,6 @@ import typing
 
 class Ground():
     def createGroundMaterial(_self, _season) -> bpy.types.Material:
-
         if(_season == "0"):
             groundMaterialName = "groundMaterialSpring"
             groundColors = [(0.801,0.715,0.619,1), (0.801,0.715,0.619,1), (0.08,0.236,0.017,1), (0.01,0.008,0.004,1)]
@@ -104,8 +103,6 @@ class Ground():
 
 
     def createGround(_self, _islandSize, _islandHeight, _season, _amountObjects):
-
-
         groundMaterialName = "groundMaterial"
 
         if(_season == "0"):
@@ -127,7 +124,6 @@ class Ground():
         bpy.context.object.modifiers.new(name="Displace", type='DISPLACE')
         bpy.context.object.modifiers['Displace'].texture = tex
         bpy.context.object.data.materials.append(bpy.data.materials.get(groundMaterialName))
-
 
         bpy.context.object.modifiers.new("GeoNodesModifier", "NODES")
         bpy.context.object.modifiers['GeoNodesModifier'].node_group = _self.createGroundGeoNodes(_amountObjects)

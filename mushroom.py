@@ -2,11 +2,8 @@ import bpy
 import random
 import bmesh
 
-
 class OneMushroom():
-
     def createMushroom(_self, _season)-> object:
-
         tribeMaterialName = "mushroomTribe"
         tribeColor = (0.584, 0.423, 0.423, 1)
 
@@ -24,8 +21,7 @@ class OneMushroom():
             mushroomMaterialName = "mushroomHatWinter"
 
         if bpy.context.mode == "EDIT_MESH":
-            bpy.ops.object.mode_set(mode='OBJECT')
-            
+            bpy.ops.object.mode_set(mode='OBJECT')  
 
         bpy.ops.mesh.primitive_cylinder_add(vertices=12, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(.09, .09, .3))
         tribe = bpy.context.object
@@ -38,14 +34,8 @@ class OneMushroom():
         for vert in bm.verts:
             for l in vert.link_edges:
                 if vert.index % 2 == 1:
-                    print(vert.co)
                     vert.co[0] = vert.co[0] * 0.85
                     vert.co[1] = vert.co[1] * 0.85
-                
-                print(vert.index)
-
-
-        print(tribe.data.polygons[1])
 
         bpy.ops.object.editmode_toggle()
 
@@ -63,16 +53,12 @@ class OneMushroom():
             mat.use_nodes = True
             mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = tribeColor
 
-
-
-
         mat.use_nodes = True
 
         if tribe.data.materials:
             tribe.data.materials[0] = mat
         else: 
             tribe.data.materials.append(mat)
-
 
         DECIMATE_FACTOR = random.uniform(0.95, 1)
 
@@ -91,13 +77,9 @@ class OneMushroom():
 
         bpy.context.scene.tool_settings.use_proportional_edit = True
 
-
-
         vl=[]
 
-
         for vert in bm.verts:
-
             for l in vert.link_edges:
                 selected_vert = random.randint(0, 2)
                 selected_vert2 = random.randint(0, 2)
@@ -105,7 +87,6 @@ class OneMushroom():
                 if selected_vert == selected_vert2:
                     vert.co[selected_vert] =  vert.co[selected_vert] * vert_value
                 vl.append(vert.co)
-
 
         bpy.ops.object.editmode_toggle()
 
@@ -115,7 +96,6 @@ class OneMushroom():
             mat = bpy.data.materials.new(name=mushroomMaterialName)
             mat.use_nodes = True
             mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = mushroomHatColor
-
             
         mat.use_nodes = True
 
@@ -124,7 +104,6 @@ class OneMushroom():
         else: 
             mushroom.data.materials.append(mat)
 
-
         mushroom.parent = tribe
         mushroom.matrix_parent_inverse = tribe.matrix_world.inverted()
         bpy.ops.object.select_more()
@@ -132,4 +111,3 @@ class OneMushroom():
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
 
         return mushroom
-

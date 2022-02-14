@@ -1,23 +1,12 @@
 import random
 import bpy
-import types
 
 from .sky import Sky
 
 class Water():
-    #def createWater(): 
-        #    bpy.ops.mesh.primitive_plane_add(size=15, enter_editmode=True)
-        #    bpy.ops.mesh.subdivide(number_cuts=50)
-        #    bpy.ops.object.editmode_toggle()
-        #    tex = bpy.data.textures.new(name = "cloud", type="CLOUDS")
-        #    tex.noise_scale = 0.4
-        #    bpy.context.object.modifiers.new(name="Displace", type='DISPLACE')
-        #    bpy.data.objects["Plane"].modifiers["Displace"].strength = 0.5
-        #    bpy.context.object.modifiers['Displace'].texture = tex
-        #    bpy.ops.object.shade_smooth()
-
     def createWater(_self, _season, _islandSize):
-        bpy.ops.mesh.primitive_plane_add(size= 4.5 * _islandSize)
+        waterScaleFactor = 4.5
+        bpy.ops.mesh.primitive_plane_add(size= waterScaleFactor * _islandSize)
         mat_water: bpy.types.Material = bpy.data.materials.new("Water Material")
         mat_water.use_nodes = True
         nodes_water = mat_water.node_tree.nodes
@@ -44,25 +33,27 @@ class Water():
         mat_water.node_tree.links.new(node_bump.outputs[0], node_BSDF.inputs[20])
         bpy.context.object.data.materials.append(bpy.data.materials.get("Water Material"))
 
-        #Water Waves
         for c_curve in mat_water.node_tree.animation_data.action.fcurves:
             for c_keyframe in c_curve.keyframe_points:
                 c_keyframe.interpolation = "LINEAR"
         
         if(_season == "3"):
-            iceShellObject = _self.createIceShell(1)
-            bpy.context.view_layer.objects.active = bpy.data.objects.get("Plane")
-            bpy.ops.object.particle_system_add()
-            bpy.data.particles["ParticleSettings"].count = 100
-            bpy.data.particles["ParticleSettings"].type = 'HAIR'
-            bpy.data.particles["ParticleSettings"].render_type = 'OBJECT'
-            bpy.data.particles["ParticleSettings"].instance_object = iceShellObject
-            bpy.data.particles["ParticleSettings"].particle_size = 0.07
-            bpy.data.particles["ParticleSettings"].hair_length = 2
-            bpy.data.particles["ParticleSettings"].rotation_mode = 'OB_Y'
-            bpy.data.particles["ParticleSettings"].size_random = 0.308219
-            sky = Sky()
-            sky.createSky()
+            _self.createWinterObjects()
+
+    def createWinterObjects(_self):
+        iceShellObject = _self.createIceShell(1)
+        bpy.context.view_layer.objects.active = bpy.data.objects.get("Plane")
+        bpy.ops.object.particle_system_add()
+        bpy.data.particles["ParticleSettings"].count = 100
+        bpy.data.particles["ParticleSettings"].type = 'HAIR'
+        bpy.data.particles["ParticleSettings"].render_type = 'OBJECT'
+        bpy.data.particles["ParticleSettings"].instance_object = iceShellObject
+        bpy.data.particles["ParticleSettings"].particle_size = 0.07
+        bpy.data.particles["ParticleSettings"].hair_length = 2
+        bpy.data.particles["ParticleSettings"].rotation_mode = 'OB_Y'
+        bpy.data.particles["ParticleSettings"].size_random = 0.308219
+        sky = Sky()
+        sky.createSky()
 
     def createIceShell(_self, _number) -> object:
         iceCollection = bpy.context.blend_data.collections.new(name='ice_collection')
@@ -80,5 +71,3 @@ class Water():
         bpy.data.collections["Collection"].objects.unlink(iceShellObject)
 
         return iceShellObject
-
-        

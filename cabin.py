@@ -220,7 +220,6 @@ class Cabin:
         door_object = _self.createDoor(eastWall_object)
         stilts_object = _self.stilts()
 
-
         windowNorth_object = _self.createWindow(northWall_object)
         windowSouth_object = _self.createWindow(southWall_object)
         pivot = _self.pivitPoint()

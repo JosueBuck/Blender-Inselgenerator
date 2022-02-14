@@ -88,8 +88,7 @@ class SimpleTree():
             
         elif(_season == "3"):
             leaveMaterialName = "simpleTreeLeaveWinter"
-            leaveColor = (1,1,1,1)
-            
+            leaveColor = (1,1,1,1)     
 
         mat_roof: bpy.types.Material = bpy.data.materials.new(leaveMaterialName)
         mat_roof.use_nodes = True
@@ -102,18 +101,14 @@ class SimpleTree():
         tribeMaterialName = "simpleTreeTribe"
         tribeColor = (0.114 ,0.041 ,0.010 ,1)
 
-
         mat_roof: bpy.types.Material = bpy.data.materials.new(tribeMaterialName)
         mat_roof.use_nodes = True
         nodes_roof: typing.List[bpy.types.Node] = mat_roof.node_tree.nodes
         nodes_roof["Principled BSDF"].inputs[0].default_value = tribeColor
         return mat_roof
 
-
-    def normalTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax, _season) -> object:
-
+    def createSimpleTree(_self, _root, _number, _treeLenMin, _treeLenMax, _branchLenMin, _branchLenMax, _season) -> object:
         tribeMaterialName = "simpleTreeTribe"
-        #leaveMaterialName = "leaveMaterial"
 
         if(_season == "0"):
                 leaveMaterialName = "simpleTreeLeaveSpring"
@@ -171,8 +166,7 @@ class SimpleTree():
         tree_skin_modifier.branch_smoothing = 1
         tree_object.modifiers.new(name="Subdivision", type='SUBSURF')
         tree_object.data.materials.append(bpy.data.materials.get(tribeMaterialName))
-        bpy.context.view_layer.objects.active = tree_object
-        
+        bpy.context.view_layer.objects.active = tree_object     
 
         goalThiknes = 0.1
         startThikness = 0.8
